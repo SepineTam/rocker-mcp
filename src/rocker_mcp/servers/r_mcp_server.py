@@ -7,7 +7,7 @@
 # @Email  : sepinetam@gmail.com
 # @File   : r_mcp_server.py
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from mcp.server.fastmcp import FastMCP
 
@@ -39,6 +39,70 @@ def show_example(
         >>> show_example("ggplot2::ggplot")
     """
     return r_runner.show_example(function)
+
+
+@r_mcp.prompt()
+def list_function(
+    package: str
+) -> List[str]:
+    """
+    List all functions exported by an R package.
+
+    Args:
+        package (str): Name of the R package.
+
+    Returns:
+        List[str]: List of function names in the package.
+
+    Examples:
+        >>> list_function("dplyr")
+        ["filter", "select", "mutate", ...]
+    """
+    return r_runner.list_functions(package)
+
+
+@r_mcp.tool()
+def search_docs(
+    topic: str
+) -> str:
+    """
+    Search R documentation for a keyword.
+
+    Args:
+        topic (str): Keyword to search for.
+
+    Returns:
+        str: Search results with matching help topics.
+
+    Examples:
+        >>> search_docs("regression")
+    """
+    return r_runner.search_docs(topic)
+
+@r_mcp.tool()
+def r_help(
+    function: str,
+    package: str = None
+) -> str:
+    """
+    Get help documentation for an R function.
+
+    Args:
+        function (str): Name of the R function.
+        package (str, optional): Package name. If provided, looks up
+            package::function. Defaults to None.
+
+    Returns:
+        str: Help documentation for the function.
+
+    Raises:
+        RuntimeError: If the help command fails.
+
+    Examples:
+        >>> r_help("mean")
+        >>> r_help("ggplot", package="ggplot2")
+    """
+    return r_runner.help(function, package)
 
 
 @r_mcp.tool()
