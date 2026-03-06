@@ -11,7 +11,6 @@ from mcp.server.fastmcp import FastMCP
 
 from ..r_manager import RunR
 
-
 r_mcp = FastMCP(
     name="R-MCP"
 )
@@ -61,4 +60,3 @@ def run_rscript(
         RuntimeError: If the R script execution fails.
     """
     return r_runner.run(script_path, work_dir)
-
