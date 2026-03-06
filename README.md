@@ -19,11 +19,11 @@ Start R-docker MCP in your Claude Code:
         "-it", 
         "--rm", 
         "--mount", 
-        "type=bind,src=$(PWD),dst=$(PWD)",
+        "type=bind,src=${PWD},dst=${PWD}",
         "--mount",
         "type=volume,src=r_lib,dst=/usr/local/lib/R/site-library",
         "-w",
-        "$(PWD)",
+        "${PWD}",
         "ghcr.io/sepinetam/rocker-mcp:latest"
       ]
     }
