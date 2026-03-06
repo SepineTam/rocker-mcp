@@ -96,6 +96,70 @@ class RunR:
         )
         return result
 
+    def is_package_installed(self, package: str) -> bool:
+        """
+        Check if an R package is installed.
+
+        Args:
+            package (str): Name of the R package to check.
+
+        Returns:
+            bool: True if the package is installed, False otherwise.
+
+        Examples:
+            >>> runner = RunR()
+            >>> runner.is_package_installed("ggplot2")
+            True
+            >>> runner.is_package_installed("nonexistent_package")
+            False
+        """
+        result = subprocess.run(
+            [
+                self.RScript,
+                "-e",
+                f'cat(require("{package}", character.only = TRUE, quietly = TRUE))'
+            ],
+            capture_output=True,
+            text=True
+        )
+        return result.stdout.strip() == "TRUE"
+
+    def help(self, package: str, n: str = "help"):
+        pass
+
+    def show_example(self, function: str) -> str:
+        """
+        Run examples for an R function.
+
+        Args:
+            function (str): Name of the R function to show examples for.
+
+        Returns:
+            str: The stdout output from running the example.
+
+        Raises:
+            RuntimeError: If the example execution fails.
+
+        Examples:
+            >>> runner = RunR()
+            >>> runner.show_example("mean")
+            >>> runner.show_example("ggplot2::ggplot")
+        """
+        result = subprocess.run(
+            [
+                self.RScript,
+                "-e",
+                f'example("{function}")'
+            ],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"R example failed:\n{result.stderr}"
+            )
+        return result.stdout
+
     def set_rscript(self, r_command: str) -> str:
         self.RScript = r_command
         return self.RScript

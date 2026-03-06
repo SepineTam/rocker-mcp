@@ -20,6 +20,27 @@ r_mcp = FastMCP(
 r_runner = RunR()
 
 
+@r_mcp.prompt()
+def show_example(
+    function: str
+) -> str:
+    """
+    Show usage examples for an R function.
+
+    Args:
+        function (str): Name of the R function. Can include package prefix
+            (e.g., "ggplot2::ggplot").
+
+    Returns:
+        str: Example code and output for the specified function.
+
+    Examples:
+        >>> show_example("mean")
+        >>> show_example("ggplot2::ggplot")
+    """
+    return r_runner.show_example(function)
+
+
 @r_mcp.tool()
 def set_rscript(
     r_command: str
