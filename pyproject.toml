@@ -1,0 +1,19 @@
+[project]
+name = "rocker-mcp"
+version = "0.1.0"
+description = "Run a R script in docker for AI"
+readme = "README.md"
+authors = [
+    { name = "SongTan", email = "sepinetam@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=1.26.0",
+]
+
+[project.scripts]
+rocker-mcp = "rocker_mcp:main"
+
+[build-system]
+requires = ["uv_build>=0.9.28,<0.10.0"]
+build-backend = "uv_build"
