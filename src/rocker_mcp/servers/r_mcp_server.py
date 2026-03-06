@@ -7,6 +7,8 @@
 # @Email  : sepinetam@gmail.com
 # @File   : r_mcp_server.py
 
+from typing import Any, Dict
+
 from mcp.server.fastmcp import FastMCP
 
 from ..r_manager import RunR
@@ -60,3 +62,39 @@ def run_rscript(
         RuntimeError: If the R script execution fails.
     """
     return r_runner.run(script_path, work_dir)
+
+
+@r_mcp.tool()
+def install_r_package(
+    package: str,
+    repos: str = None
+) -> Dict[str, Any]:
+    """
+    Install an R package from CRAN or specified repository.
+
+    Args:
+        package (str): Name of the R package to install.
+        repos (str, optional): CRAN mirror URL.
+            Defaults to "https://cloud.r-project.org".
+
+    Returns:
+        Dict[str, Any]: Result dictionary with keys:
+            - is_error (bool): True if installation failed.
+            - msg (str): stdout if success, stderr if failed.
+
+    Examples:
+        >>> install_r_package("ggplot2")
+        {"is_error": False, "msg": "..."}
+        >>> install_r_package("dplyr", repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN/")
+        {"is_error": False, "msg": "..."}
+    """
+    result = r_runner.install(package, repos)
+    is_error = result.returncode != 0
+    if is_error:
+        msg = result.stderr
+    else:
+        msg = result.stdout
+    return {
+        "is_error": is_error,
+        "msg": msg
+    }

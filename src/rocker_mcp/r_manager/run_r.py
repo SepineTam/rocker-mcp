@@ -16,12 +16,15 @@ from .find_r import FindR
 class RunR:
     def __init__(
         self,
-        r_command: str = None
+        r_command: str = None,
+        repos: str = "https://cloud.r-project.org"
     ):
         if r_command is None:
             self.RScript = FindR().RScript
         else:
             self.RScript = r_command
+
+        self.repos = repos
 
     def run(
         self,
@@ -66,6 +69,32 @@ class RunR:
             )
 
         return result.stdout
+
+    def install(
+        self,
+        package: str,
+        repos: str = None
+    ) -> subprocess.CompletedProcess:
+        """
+        Install an R package from CRAN or specified repository.
+
+        Args:
+            package (str): Name of the R package to install.
+            repos (str, optional): CRAN mirror URL. Defaults to self.repos.
+
+        Returns:
+            subprocess.CompletedProcess: Result object with returncode, stdout, stderr.
+        """
+        result = subprocess.run(
+            [
+                self.RScript,
+                "-e",
+                f'install.packages("{package}", repos="{repos or self.repos}")'
+            ],
+            capture_output=True,
+            text=True
+        )
+        return result
 
     def set_rscript(self, r_command: str) -> str:
         self.RScript = r_command
