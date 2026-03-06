@@ -9,6 +9,7 @@
 
 import subprocess
 from pathlib import Path
+from typing import List
 
 from .find_r import FindR
 
@@ -124,8 +125,108 @@ class RunR:
         )
         return result.stdout.strip() == "TRUE"
 
-    def help(self, package: str, n: str = "help"):
-        pass
+    def help(
+        self,
+        function: str,
+        package: str = None
+    ) -> str:
+        """
+        Get help documentation for an R function.
+
+        Args:
+            function (str): Name of the R function.
+            package (str, optional): Package name. If provided, looks up
+                package::function. Defaults to None.
+
+        Returns:
+            str: Help documentation for the function.
+
+        Raises:
+            RuntimeError: If the help command fails.
+
+        Examples:
+            >>> runner = RunR()
+            >>> runner.help("mean")
+            >>> runner.help("ggplot", package="ggplot2")
+        """
+        if package:
+            topic = f"{package}::{function}"
+        else:
+            topic = function
+
+        result = subprocess.run(
+            [
+                self.RScript,
+                "-e",
+                f'help("{topic}")'
+            ],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"Help command failed:\n{result.stderr}"
+            )
+        return result.stdout
+
+    def list_functions(self, package: str) -> List[str]:
+        """
+        List all functions exported by an R package.
+
+        Args:
+            package (str): Name of the R package.
+
+        Returns:
+            List[str]: List of function names.
+
+        Examples:
+            >>> runner = RunR()
+            >>> runner.list_functions("dplyr")
+            ["filter", "select", "mutate", ...]
+        """
+        result = subprocess.run(
+            [
+                self.RScript,
+                "-e",
+                f'cat(ls(package:{package}), sep="\\n")'
+            ],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"List functions failed:\n{result.stderr}"
+            )
+        return result.stdout.strip().split("\n")
+
+    def search_docs(self, topic: str) -> str:
+        """
+        Search R documentation for a keyword.
+
+        Args:
+            topic (str): Keyword to search for.
+
+        Returns:
+            str: Search results.
+
+        Examples:
+            >>> runner = RunR()
+            >>> runner.search_docs("regression")
+        """
+        result = subprocess.run(
+            [
+                self.RScript,
+                "-e",
+                f'help.search("{topic}")'
+            ],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"Search failed:\n{result.stderr}"
+            )
+        return result.stdout
 
     def show_example(self, function: str) -> str:
         """
