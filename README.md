@@ -1,4 +1,4 @@
-# rocker-mcp
+# Rocker-MCP
 Run a R script in docker for AI. 
 
 [![Publish to PyPI](https://github.com/SepineTam/rocker-mcp/actions/workflows/release-pypi.yml/badge.svg)](https://github.com/SepineTam/rocker-mcp/actions/workflows/release-pypi.yml)
@@ -12,7 +12,7 @@ Start R-docker MCP in your Claude Code:
 ```json
 {
   "mcpServers": {
-    "rocker-mcp": {
+    "r-mcp": {
       "command": "docker",
       "args": [
         "run", 

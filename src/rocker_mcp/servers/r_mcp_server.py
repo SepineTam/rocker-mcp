@@ -14,7 +14,13 @@ from mcp.server.fastmcp import FastMCP
 from ..r_manager import RunR
 
 r_mcp = FastMCP(
-    name="R-MCP"
+    name="r-mcp",
+    instructions=(
+        "The R-MCP includes lots of tools for executing script file by Rscript. \n"
+        "If there is any error when using R-MCP, use r_help tool to find the correct syntax. \n"
+        "If missing some package, use install_r_package tool to install. "
+    ),
+    website_url="https://github.com/sepinetam/rocker-mcp"
 )
 
 r_runner = RunR()
